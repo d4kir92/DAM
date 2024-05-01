@@ -676,7 +676,6 @@ hook.Add(
 			5.0,
 			function()
 				DAMPPLoadProps("InitPostEntity")
-				pTab(hook.GetTable()["InitPostEntity"])
 			end
 		)
 	end
