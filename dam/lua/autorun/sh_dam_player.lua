@@ -78,13 +78,15 @@ end
 local function DAMSearchInFolders(path)
 	local files, directories = file.Find(path .. "/" .. "*", "GAME", false)
 	for i, v in pairs(directories) do
-		if file.IsDir(path .. "/" .. v, "GAME") then
+		if file.IsDir(path .. "/" .. v, "GAME") and v ~= nil and v ~= false and v ~= true then
 			DAMSearchInFolders(path .. "/" .. v)
 		end
 	end
 
 	for i, v in pairs(files) do
-		DAMSearchInFiles(path .. "/" .. v)
+		if v ~= nil and v ~= false and v ~= true then
+			DAMSearchInFiles(path .. "/" .. v)
+		end
 	end
 end
 
