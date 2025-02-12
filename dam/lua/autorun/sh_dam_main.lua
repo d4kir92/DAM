@@ -1,5 +1,5 @@
 -- SH DAM Main
-DAMVERSION = 1.40
+DAMVERSION = 1.41
 DAMVERSIONONLINE = 0.00
 DAMDEBUG = false
 function DAM_HR()
@@ -102,7 +102,6 @@ function DAM_SQL_QUERY(query)
 	return sql.Query(query)
 end
 
---print("QUERY", query) -- DEBUG
 function DAM_SQL_SELECT(dbname, cols, where)
 	local c = "*"
 	-- wip
