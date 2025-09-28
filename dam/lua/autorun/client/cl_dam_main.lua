@@ -181,25 +181,32 @@ function DAMLoadClientSettings()
 		local data = file.Read(clientfile, "DATA")
 		if data then
 			DAMClientData = util.JSONToTable(file.Read(clientfile, "DATA"))
-			local changed = false
-			for i, v in pairs(DAMDefaultData) do
-				if DAMClientData[i] == nil then
-					DAMClientData[i] = v
-					changed = true
+			if DAMClientData then
+				local changed = false
+				for i, v in pairs(DAMDefaultData) do
+					if DAMClientData[i] == nil then
+						DAMClientData[i] = v
+						changed = true
+					end
 				end
-			end
 
-			if changed then
-				DAMSaveClientSettings()
-			end
+				if changed then
+					DAMSaveClientSettings()
+				end
 
-			--DAMClientData = DAMDefaultData -- SET TO DEFAULT
-			DAMUpdatePalette()
-			DAM_MSG("LOADED CLIENT DATA", Color(0, 255, 0))
+				--DAMClientData = DAMDefaultData -- SET TO DEFAULT
+				DAMUpdatePalette()
+				DAM_MSG("LOADED CLIENT DATA", Color(0, 255, 0))
+			else
+				DAMClientData = DAMDefaultData
+				DAM_MSG("FAILED CLIENT DATA", Color(255, 0, 0))
+			end
 		else
+			DAMClientData = DAMDefaultData
 			DAM_MSG("CLIENT FILE BROKEN?", Color(255, 0, 0))
 		end
 	else
+		DAMClientData = DAMDefaultData
 		DAM_MSG("CLIENT FILE NOT EXISTS!", Color(255, 0, 0))
 	end
 end
