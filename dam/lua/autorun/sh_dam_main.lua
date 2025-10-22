@@ -1,5 +1,5 @@
 -- SH DAM Main
-DAMVERSION = 1.41
+DAMVERSION = 1.42
 DAMVERSIONONLINE = 0.00
 DAMDEBUG = false
 function DAM_HR()
@@ -54,7 +54,7 @@ function DAMCheckVersion()
 	if DAMVERSIONONLINE <= 0.0 or DAMVERSIONONLINE ~= DAMVERSION then
 		DAM_MSG("Check [DAM] Version")
 		http.Fetch(
-			"https://docs.google.com/spreadsheets/d/12Wx2CdNKqL54wBnu42nSSZYU5SQuhnJAkASBzBmyUpM/edit?usp=sharing",
+			"https://docs.google.com/spreadsheets/d/1RSj3u6El1vsj6aSAmSZL94ar6cWxEVT_82CG5vYUceo",
 			function(body, length, headers, code)
 				if code == 200 then
 					local s, e = string.find(body, "DAMVERSION*", 1, true)
@@ -64,6 +64,11 @@ function DAMCheckVersion()
 						if s then
 							ov = string.sub(ov, 1, s - 1)
 							DAMVERSIONONLINE = tonumber(ov)
+							if DAMVERSIONONLINE ~= DAMVERSION then
+								DAM_MSG("OUTDATED: " .. tostring(DAMVERSION) .. " -> " .. tostring(DAMVERSIONONLINE), Color(255, 0, 0))
+							else
+								DAM_MSG("UP-TO-DATE", Color(0, 255, 0))
+							end
 						end
 					end
 				else
