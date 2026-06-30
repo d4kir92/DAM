@@ -57,7 +57,7 @@ net.Receive(
 			end
 
 			if content then
-				local tab = DAM_SQL_SELECT("DAM_CMDS", nil, "name = '" .. name .. "'")
+				local tab = DAM_SQL_SELECT("DAM_CMDS", nil, "name = " .. sql.SQLStr(name))
 				if tab then
 					DAM_MSG("Command with name already exists!")
 				else
@@ -93,7 +93,7 @@ net.Receive(
 	function(len, ply)
 		if not DAMPlyHasPermission(ply, "dam_commands") then return end
 		local name = net.ReadString()
-		DAM_SQL_DELETE_FROM("DAM_CMDS", "name = '" .. name .. "'")
+		DAM_SQL_DELETE_FROM("DAM_CMDS", "name = " .. sql.SQLStr(name))
 		DAM_CMDS_UPDATE_TABLE()
 		DAM_CMDS_SEND_ALL(ply)
 	end
@@ -423,6 +423,7 @@ DAMSyncTime()
 net.Receive(
 	"dam_vote_add",
 	function(len, ply)
+		if not DAMPlyHasPermission(ply, "perm_vote") then return end
 		local question = net.ReadString()
 		local duration = net.ReadString()
 		local answers = net.ReadTable()

@@ -20,7 +20,7 @@ local function DAMAddPerm(key)
 				"DAM_UGS",
 				{
 					[key] = bo
-				}, "uid = '" .. uid .. "'"
+				}, "uid = " .. sql.SQLStr(uid)
 			)
 		end
 	)
@@ -74,7 +74,7 @@ DAMAddPerm("perm_votemap")
 local function DAMUpdateCAMIPrivs()
 	if CAMI then
 		for i, v in pairs(CAMI.GetPrivileges()) do
-			DAM_SQL_ADD_COLUMN("DAM_UGS", "'" .. v.Name .. "'", "INT DEFAULT 0")
+			DAM_SQL_ADD_COLUMN("DAM_UGS", "[" .. string.gsub(v.Name, "[%[%]]", "") .. "]", "INT DEFAULT 0")
 			util.AddNetworkString("dam_ug_update_perm_" .. v.Name)
 			net.Receive(
 				"dam_ug_update_perm_" .. v.Name,
@@ -86,7 +86,7 @@ local function DAMUpdateCAMIPrivs()
 						"DAM_UGS",
 						{
 							[v.Name] = bo
-						}, "uid = '" .. uid .. "'"
+						}, "uid = " .. sql.SQLStr(uid)
 					)
 				end
 			)
@@ -182,7 +182,7 @@ local function DAMUpdateUGNames()
 				"DAM_UGS",
 				{
 					["name"] = string.lower(v.name)
-				}, "uid = '" .. v.uid .. "'"
+				}, "uid = " .. sql.SQLStr(v.uid)
 			)
 		end
 	end
@@ -201,7 +201,7 @@ local function DAMUpdatePosition()
 			"DAM_UGS",
 			{
 				["position"] = pos
-			}, "uid = '" .. v.uid .. "'"
+			}, "uid = " .. sql.SQLStr(v.uid)
 		)
 
 		pos = pos + 1
@@ -215,7 +215,7 @@ net.Receive(
 	"dam_get_sites_data",
 	function(len, ply)
 		DAM_MSG("[GetTabs] " .. ply:DAMName() .. " ask for tabs.")
-		local tab = DAM_SQL_SELECT("DAM_UGS", nil, "name = '" .. string.lower(ply:DAMGetUserGroup()) .. "'")
+		local tab = DAM_SQL_SELECT("DAM_UGS", nil, "name = " .. sql.SQLStr(string.lower(ply:DAMGetUserGroup())))
 		if tab and tab[1] then
 			tab = tab[1]
 			DAM_MSG("[GetTabs] send tabs to " .. ply:DAMName() .. "")
@@ -251,7 +251,7 @@ net.Receive(
 			return
 		end
 
-		local tab = DAM_SQL_SELECT("DAM_UGS", nil, "name = '" .. string.lower(ply:DAMGetUserGroup()) .. "'")
+		local tab = DAM_SQL_SELECT("DAM_UGS", nil, "name = " .. sql.SQLStr(string.lower(ply:DAMGetUserGroup())))
 		if tab and tab[1] then
 			tab = tab[1]
 			if tab[site] then
@@ -295,7 +295,7 @@ net.Receive(
 	function(len, ply)
 		if not DAMPlyHasPermission(ply, "dam_usergroups") then return end
 		local uid = net.ReadString()
-		local tab = DAM_SQL_SELECT("DAM_UGS", nil, "uid = '" .. uid .. "'")
+		local tab = DAM_SQL_SELECT("DAM_UGS", nil, "uid = " .. sql.SQLStr(uid))
 		if tab == nil or tab == false then
 			tab = {}
 		end
@@ -336,7 +336,7 @@ net.Receive(
 		if not DAMPlyHasPermission(ply, "dam_usergroups") then return end
 		local uid = tonumber(net.ReadString())
 		if uid ~= 1 and uid ~= 2 then
-			DAM_SQL_DELETE_FROM("DAM_UGS", "uid = '" .. uid .. "'")
+			DAM_SQL_DELETE_FROM("DAM_UGS", "uid = " .. sql.SQLStr(uid))
 			DAM_MSG("Removed UserGroup", Color(255, 0, 0))
 			DAMUpdateUserGroupTable()
 			DAMUpdatePosition()
@@ -357,7 +357,7 @@ net.Receive(
 			"DAM_UGS",
 			{
 				["name"] = name
-			}, "uid = '" .. uid .. "'"
+			}, "uid = " .. sql.SQLStr(uid)
 		)
 
 		timer.Simple(0.1, DAMUpdateUserGroupTable)
@@ -375,7 +375,7 @@ net.Receive(
 			"DAM_UGS",
 			{
 				["dam_dashboard"] = bo
-			}, "uid = '" .. uid .. "'"
+			}, "uid = " .. sql.SQLStr(uid)
 		)
 
 		DAMUpdatePermissionsAll()
@@ -393,7 +393,7 @@ net.Receive(
 			"DAM_UGS",
 			{
 				["dam_maps"] = bo
-			}, "uid = '" .. uid .. "'"
+			}, "uid = " .. sql.SQLStr(uid)
 		)
 
 		DAMUpdatePermissionsAll()
@@ -411,7 +411,7 @@ net.Receive(
 			"DAM_UGS",
 			{
 				["dam_players"] = bo
-			}, "uid = '" .. uid .. "'"
+			}, "uid = " .. sql.SQLStr(uid)
 		)
 
 		DAMUpdatePermissionsAll()
@@ -429,7 +429,7 @@ net.Receive(
 			"DAM_UGS",
 			{
 				["dam_usergroups"] = bo
-			}, "uid = '" .. uid .. "'"
+			}, "uid = " .. sql.SQLStr(uid)
 		)
 
 		DAMUpdatePermissionsAll()
@@ -447,7 +447,7 @@ net.Receive(
 			"DAM_UGS",
 			{
 				["dam_permaprops"] = bo
-			}, "uid = '" .. uid .. "'"
+			}, "uid = " .. sql.SQLStr(uid)
 		)
 
 		DAMUpdatePermissionsAll()
@@ -465,7 +465,7 @@ net.Receive(
 			"DAM_UGS",
 			{
 				["dam_bans"] = bo
-			}, "uid = '" .. uid .. "'"
+			}, "uid = " .. sql.SQLStr(uid)
 		)
 
 		DAMUpdatePermissionsAll()
@@ -483,7 +483,7 @@ net.Receive(
 			"DAM_UGS",
 			{
 				["dam_commands"] = bo
-			}, "uid = '" .. uid .. "'"
+			}, "uid = " .. sql.SQLStr(uid)
 		)
 
 		DAMUpdatePermissionsAll()
@@ -501,7 +501,7 @@ net.Receive(
 			"DAM_UGS",
 			{
 				["dam_server"] = bo
-			}, "uid = '" .. uid .. "'"
+			}, "uid = " .. sql.SQLStr(uid)
 		)
 
 		DAMUpdatePermissionsAll()
@@ -519,7 +519,7 @@ net.Receive(
 			"DAM_UGS",
 			{
 				["dam_console"] = bo
-			}, "uid = '" .. uid .. "'"
+			}, "uid = " .. sql.SQLStr(uid)
 		)
 
 		DAMUpdatePermissionsAll()
@@ -547,7 +547,7 @@ function DAMCheckPlayer(ply, steamid)
 		return false
 	end
 
-	if DAM_SQL_SELECT("DAM_PLYS", nil, "steamid = '" .. steamid .. "'") == nil then
+	if DAM_SQL_SELECT("DAM_PLYS", nil, "steamid = " .. sql.SQLStr(steamid)) == nil then
 		DAM_MSG("Found New Player, adding to Database")
 		DAM_SQL_INSERT_INTO(
 			"DAM_PLYS",
@@ -582,10 +582,10 @@ hook.Add(
 			end
 		end
 
-		local tab = DAM_SQL_SELECT("DAM_PLYS", nil, "steamid = '" .. steamid .. "'")
+		local tab = DAM_SQL_SELECT("DAM_PLYS", nil, "steamid = " .. sql.SQLStr(steamid))
 		if tab and tab[1] then
 			tab = tab[1]
-			local ug = DAM_SQL_SELECT("DAM_UGS", nil, "name = '" .. tab.ug .. "'")
+			local ug = DAM_SQL_SELECT("DAM_UGS", nil, "name = " .. sql.SQLStr(tab.ug))
 			if ug and ug[1] then
 				ug = ug[1]
 				if tobool(ug.perm_skippw) then
@@ -613,7 +613,7 @@ net.Receive(
 			"DAM_UGS",
 			{
 				["hassuperadminpowers"] = bo
-			}, "uid = '" .. uid .. "'"
+			}, "uid = " .. sql.SQLStr(uid)
 		)
 	end
 )
@@ -629,7 +629,7 @@ net.Receive(
 			"DAM_UGS",
 			{
 				["hasadminpowers"] = bo
-			}, "uid = '" .. uid .. "'"
+			}, "uid = " .. sql.SQLStr(uid)
 		)
 	end
 )

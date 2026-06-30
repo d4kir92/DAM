@@ -293,7 +293,7 @@ net.Receive(
 			local foundnew = false
 			for i, rank in pairs(ranks) do
 				rank = string.lower(rank)
-				local ug = DAM_SQL_SELECT("DAM_UGS", nil, "name = '" .. rank .. "'")
+				local ug = DAM_SQL_SELECT("DAM_UGS", nil, "name = " .. sql.SQLStr(rank))
 				if ug == nil then
 					local res = DAM_SQL_INSERT_INTO(
 						"DAM_UGS",
@@ -336,7 +336,7 @@ net.Receive(
 			local foundnew = false
 			for i, rank in pairs(ranks) do
 				rank = string.lower(rank)
-				local ug = DAM_SQL_SELECT("DAM_UGS", nil, "name = '" .. rank .. "'")
+				local ug = DAM_SQL_SELECT("DAM_UGS", nil, "name = " .. sql.SQLStr(rank))
 				if ug == nil then
 					local res = DAM_SQL_INSERT_INTO(
 						"DAM_UGS",

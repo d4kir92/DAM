@@ -12,7 +12,7 @@ end
 
 local function DAMUpdatePermissions(ply)
 	local groupName = ply:DAMGetUserGroup()
-	local dbtab = DAM_SQL_SELECT("DAM_UGS", nil, "name = '" .. groupName .. "'")
+	local dbtab = DAM_SQL_SELECT("DAM_UGS", nil, "name = " .. sql.SQLStr(groupName))
 	if dbtab and dbtab[1] then
 		dbtab = dbtab[1]
 		for i, v in pairs(dbtab) do
@@ -97,7 +97,7 @@ hook.Add(
 	"DAM_PlayerAuthed",
 	function(ply, steamid, uniqueid)
 		DAMCheckPlayer(ply, steamid)
-		local tab = DAM_SQL_SELECT("DAM_PLYS", nil, "steamid = '" .. steamid .. "'")
+		local tab = DAM_SQL_SELECT("DAM_PLYS", nil, "steamid = " .. sql.SQLStr(steamid))
 		if tab and tab[1] then
 			tab = tab[1]
 			ply:SetUserGroup(tab.ug)
@@ -114,7 +114,7 @@ hook.Add(
 		local steamid = ply:SteamID()
 		if ply:GetUserGroup() == "NOTSET" then
 			DAMCheckPlayer(ply, steamid)
-			local tab = DAM_SQL_SELECT("DAM_PLYS", nil, "steamid = '" .. steamid .. "'")
+			local tab = DAM_SQL_SELECT("DAM_PLYS", nil, "steamid = " .. sql.SQLStr(steamid))
 			if tab and tab[1] then
 				tab = tab[1]
 				ply:SetUserGroup(tab.ug)
@@ -183,7 +183,7 @@ net.Receive(
 					"DAM_PLYS",
 					{
 						["ug"] = ug
-					}, "steamid = '" .. steamid .. "'"
+					}, "steamid = " .. sql.SQLStr(steamid)
 				)
 
 				local target = DAMFindPlayerBySteamID(steamid)
@@ -243,7 +243,7 @@ concommand.Add(
 									"DAM_PLYS",
 									{
 										["ug"] = ug
-									}, "steamid = '" .. pl:SteamID() .. "'"
+									}, "steamid = " .. sql.SQLStr(pl:SteamID())
 								)
 
 								pl:SetUserGroup(ug)
@@ -255,7 +255,7 @@ concommand.Add(
 									"DAM_PLYS",
 									{
 										["ug"] = ug
-									}, "steamid = '" .. pl:SteamID() .. "'"
+									}, "steamid = " .. sql.SQLStr(pl:SteamID())
 								)
 
 								pl:SetUserGroup(ug)
@@ -439,7 +439,7 @@ function Player:Ban(duration, kick, reason, from)
 			["banned_ts"] = i_duration,
 			["banned_reason"] = s_reason,
 			["banned_from"] = s_from,
-		}, "steamid = '" .. self:SteamID() .. "'"
+		}, "steamid = " .. sql.SQLStr(self:SteamID())
 	)
 
 	DAM_MSG("[BANNED] [Player: " .. self:DAMName() .. "] [Duration: " .. i_duration .. "] [From: " .. s_from .. "]", Color(0, 255, 0))
@@ -472,6 +472,7 @@ net.Receive(
 	"dam_ply_unban",
 	function(len, ply)
 		if not DAMPlyHasPermission(ply, "dam_players") then return end
+		if not DAMPlyHasPermission(ply, "perm_ban") then return end
 		local steamid = net.ReadString()
 		local unbanned = DAMUnbanPlayer(steamid)
 		if unbanned then

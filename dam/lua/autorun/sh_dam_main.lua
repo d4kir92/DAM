@@ -154,10 +154,10 @@ function DAM_SQL_INSERT_INTO(dbname, values)
 	for i, v in pairs(values) do
 		if cols == "" then
 			cols = i
-			vals = "'" .. v .. "'"
+			vals = sql.SQLStr(tostring(v))
 		else
 			cols = cols .. "," .. i
-			vals = vals .. "," .. "'" .. v .. "'"
+			vals = vals .. "," .. sql.SQLStr(tostring(v))
 		end
 	end
 
@@ -178,9 +178,9 @@ function DAM_SQL_UPDATE(dbname, values, where)
 	local vals = ""
 	for i, v in pairs(values) do
 		if vals == "" then
-			vals = "'" .. i .. "'" .. " = '" .. v .. "'"
+			vals = sql.SQLStr(i) .. " = " .. sql.SQLStr(tostring(v))
 		else
-			vals = vals .. "," .. "'" .. i .. "'" .. " = '" .. v .. "'"
+			vals = vals .. "," .. sql.SQLStr(i) .. " = " .. sql.SQLStr(tostring(v))
 		end
 	end
 

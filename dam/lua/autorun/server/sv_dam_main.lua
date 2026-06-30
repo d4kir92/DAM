@@ -29,7 +29,7 @@ for i, v in pairs(mats) do
 end
 
 function DAMPlyHasPermission(ply, perm)
-	local tab = DAM_SQL_SELECT("DAM_UGS", {perm}, "name = '" .. ply:DAMGetUserGroup() .. "'")
+	local tab = DAM_SQL_SELECT("DAM_UGS", {perm}, "name = " .. sql.SQLStr(ply:DAMGetUserGroup()))
 	if tab and tab[1] then
 		tab = tab[1]
 		if tab[perm] then
@@ -91,7 +91,7 @@ if DAMTrackPlayers == nil then
 			if tab then
 				for i, v in pairs(tab) do
 					if tonumber(v.ts) < (os.time() - (60 * 60 * 24 * 30)) then
-						DAM_SQL_DELETE_FROM("DAM_PLYGRAPH", "uid = '" .. v.uid .. "'")
+						DAM_SQL_DELETE_FROM("DAM_PLYGRAPH", "uid = " .. sql.SQLStr(v.uid))
 					end
 				end
 			end
@@ -361,7 +361,7 @@ DAM_SQL_ADD_COLUMN("DAM_PP", "content", "TEXT DEFAULT ''")
 --DAM_SQL_DROP_TABLE( "DAM_PP" )
 local curcleanupid = 0
 function DAMPPUpdateCount()
-	local ppl = DAM_SQL_SELECT("DAM_PP", {"uid",}, "map = '" .. game.GetMap() .. "'")
+	local ppl = DAM_SQL_SELECT("DAM_PP", {"uid",}, "map = " .. sql.SQLStr(game.GetMap()))
 	local count = 0
 	if ppl then
 		for i, p in pairs(ppl) do
@@ -530,10 +530,10 @@ local function DAMPPRepair(pp)
 				["map"] = pp.map,
 				["classname"] = pp.classname,
 				["content"] = util.TableToJSON(content),
-			}, "uid = '" .. pp.uid .. "'"
+			}, "uid = " .. sql.SQLStr(pp.uid)
 		)
 
-		local reppp = DAM_SQL_SELECT("DAM_PP", nil, "uid = '" .. pp.uid .. "'")
+		local reppp = DAM_SQL_SELECT("DAM_PP", nil, "uid = " .. sql.SQLStr(pp.uid))
 		if reppp and reppp[1] then
 			reppp = reppp[1]
 			if DAMPPIsValid(reppp) then
@@ -561,7 +561,7 @@ local function DAMPPLoadProps(from)
 	DAM_MSG(string.format("[PP] LOAD Perma Props: %s", from))
 	DAMPPUpdateCount()
 	curcleanupid = curcleanupid + 1
-	local ppl = DAM_SQL_SELECT("DAM_PP", {"uid",}, "map = '" .. game.GetMap() .. "'")
+	local ppl = DAM_SQL_SELECT("DAM_PP", {"uid",}, "map = " .. sql.SQLStr(game.GetMap()))
 	if ppl then
 		for i, p in pairs(ppl) do
 			p.curcleanupid = curcleanupid
@@ -569,7 +569,7 @@ local function DAMPPLoadProps(from)
 				i * 0.01,
 				function()
 					if curcleanupid ~= p.curcleanupid then return false end
-					local pp = DAM_SQL_SELECT("DAM_PP", nil, "uid = '" .. p.uid .. "'")
+					local pp = DAM_SQL_SELECT("DAM_PP", nil, "uid = " .. sql.SQLStr(p.uid))
 					if pp and pp[1] then
 						pp = pp[1]
 						local valid = true
@@ -582,7 +582,7 @@ local function DAMPPLoadProps(from)
 								DAM_MSG("[PP] Failed to Repair Perma prop: " .. tostring(pp.classname) .. " [" .. tostring(pp.uid) .. "]", Color(255, 0, 0))
 								DAMAddError(table.ToString(util.JSONToTable(pp.content), "DB PP", false), "DAM PP", GetRealm())
 							else
-								local reppp = DAM_SQL_SELECT("DAM_PP", nil, "uid = '" .. pp.uid .. "'")
+								local reppp = DAM_SQL_SELECT("DAM_PP", nil, "uid = " .. sql.SQLStr(pp.uid))
 								if reppp and reppp[1] then
 									pp = reppp[1]
 									valid = true
@@ -697,7 +697,7 @@ hook.Add(
 
 local function DAMPPSGet(ply)
 	DAMPPUpdateCount()
-	local pps = DAM_SQL_SELECT("DAM_PP", nil, "map = '" .. game.GetMap() .. "'")
+	local pps = DAM_SQL_SELECT("DAM_PP", nil, "map = " .. sql.SQLStr(game.GetMap()))
 	ply.getppsid = ply.getppsid or 0
 	ply.getppsid = ply.getppsid + 1
 	local count = 0
@@ -739,7 +739,7 @@ net.Receive(
 	function(len, ply)
 		if not DAMPlyHasPermission(ply, "dam_permaprops") then return end
 		local uid = net.ReadUInt(24)
-		DAM_SQL_DELETE_FROM("DAM_PP", "uid = '" .. uid .. "'")
+		DAM_SQL_DELETE_FROM("DAM_PP", "uid = " .. sql.SQLStr(uid))
 		DAMPPUpdateCount()
 	end
 )
@@ -778,7 +778,7 @@ net.Receive(
 					}
 				)
 
-				DAM_SQL_DELETE_FROM("permaprops", "id = '" .. perma.id .. "'")
+				DAM_SQL_DELETE_FROM("permaprops", "id = " .. sql.SQLStr(perma.id))
 			end
 
 			DAMPPUpdateCount()
@@ -832,7 +832,7 @@ net.Receive(
 					}
 				)
 
-				DAM_SQL_DELETE_FROM("permaprops_system", "id = '" .. perma.id .. "'")
+				DAM_SQL_DELETE_FROM("permaprops_system", "id = " .. sql.SQLStr(perma.id))
 			end
 
 			DAMPPUpdateCount()

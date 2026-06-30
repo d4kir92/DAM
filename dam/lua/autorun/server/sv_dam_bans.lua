@@ -1,5 +1,5 @@
 function DAMGetBanDuration(steamid)
-	local tab = DAM_SQL_SELECT("DAM_PLYS", nil, "steamid = '" .. steamid .. "'")
+	local tab = DAM_SQL_SELECT("DAM_PLYS", nil, "steamid = " .. sql.SQLStr(steamid))
 	if tab and tab[1] then
 		tab = tab[1]
 
@@ -10,7 +10,7 @@ function DAMGetBanDuration(steamid)
 end
 
 function DAMGetBanReason(steamid)
-	local tab = DAM_SQL_SELECT("DAM_PLYS", nil, "steamid = '" .. steamid .. "'")
+	local tab = DAM_SQL_SELECT("DAM_PLYS", nil, "steamid = " .. sql.SQLStr(steamid))
 	if tab and tab[1] then
 		tab = tab[1]
 
@@ -29,7 +29,7 @@ function DAMCheckBan(tab)
 end
 
 function DAMCheckBanBySteamID(steamid)
-	local tab = DAM_SQL_SELECT("DAM_PLYS", nil, "steamid = '" .. steamid .. "'")
+	local tab = DAM_SQL_SELECT("DAM_PLYS", nil, "steamid = " .. sql.SQLStr(steamid))
 	if tab and tab[1] then
 		tab = tab[1]
 		DAMCheckBan(tab)
@@ -65,7 +65,7 @@ end
 
 function DAMUnbanPlayer(steamid)
 	if steamid then
-		local tab = DAM_SQL_SELECT("DAM_PLYS", nil, "steamid = '" .. steamid .. "'")
+		local tab = DAM_SQL_SELECT("DAM_PLYS", nil, "steamid = " .. sql.SQLStr(steamid))
 		if tab ~= nil and tab ~= false then
 			tab = tab[1]
 			tab.banned = tonumber(tab.banned)
@@ -77,7 +77,7 @@ function DAMUnbanPlayer(steamid)
 						["banned_ts"] = -1,
 						["banned_reason"] = "",
 						["banned_from"] = "",
-					}, "steamid = '" .. steamid .. "'"
+					}, "steamid = " .. sql.SQLStr(steamid)
 				)
 
 				return true
