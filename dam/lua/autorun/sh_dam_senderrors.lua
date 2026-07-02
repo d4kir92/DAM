@@ -2,8 +2,8 @@
 -- CONFIG
 local filename = "dam/dam_errors.json"
 local deleteafter = 60 * 60 * 24
-local url_cl = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSdpDXnmrvp5iItVODt4EJu-kEm-w8WYULEa85-ZyW03MnCKTw/formResponse"
-local url_sv = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSeCBNEnzprx2UmJ3UIi2h_vj2ylNwzhkpl_i1xvK3KqWdiCPg/formResponse"
+local url_cl = "https://docs.google.com/forms/u/0/d/e/1FAIpQLScarj89BizaUomey6eS9dcQK6otz9FBwdYN4v6dxO5IEmDmmg/formResponse"
+local url_sv = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSda20DE3GeS7BP1b7STqLaLqWdG830qoVZEMBc7HaUen2Sddg/formResponse"
 -- CONFIG
 local function DAMErrorMSG(msg, color)
 	color = color or Color(255, 0, 0)
@@ -57,27 +57,27 @@ local function DAMSendError(tab, from)
 
 	if tab.realm == "SERVER" then
 		-- err
-		entry["entry.15092053"] = tostring(tab.error)
+		entry["entry.1401720411"] = tostring(tab.error)
 		-- trace
-		entry["entry.1100087360"] = tostring(tab.trace)
+		entry["entry.1227755746"] = tostring(tab.trace)
 		-- ts
-		entry["entry.793417475"] = tostring(tab.ts)
+		entry["entry.905099263"] = tostring(tab.ts)
 		-- realm
-		entry["entry.1691073207"] = tostring(tab.realm)
+		entry["entry.169323352"] = tostring(tab.realm)
 		-- version
-		entry["entry.1170309832"] = tostring(DAMVERSION)
+		entry["entry.625797728"] = tostring(DAMVERSION)
 		posturl = url_sv
 	elseif tab.realm == "CLIENT" then
 		-- err
-		entry["entry.1358830945"] = tostring(tab.error)
+		entry["entry.1401720411"] = tostring(tab.error)
 		-- trace
-		entry["entry.77270352"] = tostring(tab.trace)
+		entry["entry.1227755746"] = tostring(tab.trace)
 		-- ts
-		entry["entry.1127154342"] = tostring(tab.ts)
+		entry["entry.905099263"] = tostring(tab.ts)
 		-- realm
-		entry["entry.1795109154"] = tostring(tab.realm)
+		entry["entry.169323352"] = tostring(tab.realm)
 		-- version
-		entry["entry.987438708"] = tostring(DAMVERSION)
+		entry["entry.625797728"] = tostring(DAMVERSION)
 		posturl = url_cl
 	else
 		MsgC(Color(255, 0, 0), ">>> [DAMSendError] FAIL! >> Realm: " .. tostring(tab.realm) .. "\n")
