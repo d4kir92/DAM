@@ -140,7 +140,7 @@ function TOOL:RightClick(trace)
 			DAM_PP_NOTI(ply, "PermaProps_ID invalid!")
 		else
 			DAM_PP_NOTI(ply, "Prop/Entity removed!")
-			DAM_SQL_DELETE_FROM("DAM_PP", "uid = '" .. ent.PermaProps_ID .. "'")
+			DAM_SQL_DELETE_FROM("DAM_PP", "uid = " .. sql.SQLStr(ent.PermaProps_ID))
 			ent.PermaProps = false
 			ent.PermaProps_ID = nil
 			DAMPPUpdateCount()
@@ -181,7 +181,7 @@ function TOOL:Reload(trace)
 					["map"] = game.GetMap(),
 					["classname"] = ent:GetClass(),
 					["content"] = util.TableToJSON(content),
-				}, "uid = '" .. ent.PermaProps_ID .. "'"
+				}, "uid = " .. sql.SQLStr(ent.PermaProps_ID)
 			)
 
 			DAMPPUpdateCount()

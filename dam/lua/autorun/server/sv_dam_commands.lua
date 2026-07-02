@@ -103,7 +103,7 @@ util.AddNetworkString("dam_model_open")
 net.Receive(
 	"dam_model_open",
 	function(len, ply)
-		if not DAMPlyHasPermission(ply, "dam_commands") then return end
+		if not DAMPlyHasPermission(ply, "perm_model") then return end
 		local target = net.ReadEntity()
 		local pm = net.ReadString()
 		if IsValid(target) then

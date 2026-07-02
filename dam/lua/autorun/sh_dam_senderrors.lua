@@ -25,10 +25,10 @@ local function DAMCheckErrorFile()
 end
 
 DAMCheckErrorFile()
-function DAMNewError(error)
+function DAMNewError(errMsg)
 	DAMCheckErrorFile()
 	for i, v in pairs(DAMErrors) do
-		if v.error and v.error == err then return false end
+		if v.error and v.error == errMsg then return false end
 	end
 
 	return true
@@ -146,11 +146,11 @@ function DAMRemoveOutdatedErrors()
 end
 
 timer.Simple(0.1, DAMRemoveOutdatedErrors)
-function DAMAddError(error, trace, realm)
+function DAMAddError(errMsg, trace, realm)
 	local newErr = {}
-	newErr.error = err
+	newErr.error = errMsg
 	newErr.trace = trace
-	newErr.trace = newErr.trace .. "\n" .. "err: /dam/ " .. tostring(string.find(error, "/dam/", 1, true)) .. "      trace: /dam/ " .. tostring(string.find(trace, "/dam/", 1, true)) .. "      trace: DAM " .. tostring(string.find(trace, "DAM - ", 1, true))
+	newErr.trace = newErr.trace .. "\n" .. "err: /dam/ " .. tostring(string.find(errMsg, "/dam/", 1, true)) .. "      trace: /dam/ " .. tostring(string.find(trace, "/dam/", 1, true)) .. "      trace: DAM " .. tostring(string.find(trace, "DAM - ", 1, true))
 	newErr.trace = newErr.trace .. "\n" .. "IP: " .. GetGlobalString("serverip", "0.0.0.0:27015")
 	newErr.ts = os.time()
 	newErr.realm = realm
@@ -166,7 +166,7 @@ function DAMAddLuaErrorHook()
 	hook.Add(
 		"OnLuaError",
 		"DAM_OnLuaError",
-		function(error, realm, stack, name, id)
+		function(errMsg, realm, stack, name, id)
 			if game.SinglePlayer() then return end
 			local newtrace = {}
 			for i, w in pairs(stack) do
@@ -183,9 +183,9 @@ function DAMAddLuaErrorHook()
 				isId = true
 			end
 
-			if err and trace and realm and not string.find(trace, "addons/dam/lua/autorun/sh_dam_main.lua:528", 1, true) and ((string.find(error, "/dam/", 1, true) or string.find(trace, "DAM - ", 1, true)) or isId) and DAMNewError(error, id) then
+			if errMsg and trace and realm and not string.find(trace, "addons/dam/lua/autorun/sh_dam_main.lua:528", 1, true) and ((string.find(errMsg, "/dam/", 1, true) or string.find(trace, "DAM - ", 1, true)) or isId) and DAMNewError(errMsg) then
 				MsgC(Color(255, 0, 0), "[DAMAddError] >> Found a new ERROR" .. "\n")
-				DAMAddError(error, trace, realm)
+				DAMAddError(errMsg, trace, realm)
 			end
 		end
 	)
